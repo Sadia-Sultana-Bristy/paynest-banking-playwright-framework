@@ -49,6 +49,7 @@ npx playwright test --project=chromium --project=api
 | `npm run test:ui` | UI mode: watch, time-travel, pick tests |
 | `npm run test:flaky-check` | Each Chromium test ×5, retries off |
 | `npm run report` | Open the last HTML report |
+| `npm run demo` | Record the end-to-end journey as MP4 + GIF (needs ffmpeg) |
 | `npm run lint` | ESLint, including Playwright rules |
 
 ## Environments

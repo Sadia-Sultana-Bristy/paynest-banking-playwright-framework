@@ -144,6 +144,25 @@ jobs:
             reports/summary.md
           retention-days: 14
 
+      - name: Record end-to-end demo video
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        # A failed recording must never block publishing the test report.
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          npx playwright install --with-deps chromium
+          npm run demo -- reports/html/demo
+
+      - name: Upload demo video
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-demo-video
+          path: reports/html/demo/
+          retention-days: 14
+          if-no-files-found: ignore
+
       - name: Prepare report for GitHub Pages
         if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
         uses: actions/upload-pages-artifact@v3

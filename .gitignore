@@ -3,6 +3,7 @@ node_modules/
 reports/
 test-results/
 blob-report/
+demo-results/
 all-blob-reports/
 playwright-report/
 playwright/.cache/

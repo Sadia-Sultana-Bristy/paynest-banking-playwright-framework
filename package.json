@@ -24,6 +24,7 @@
     "test:ui": "playwright test --ui",
     "test:flaky-check": "playwright test --project=chromium --repeat-each=5 --retries=0",
     "report": "playwright show-report reports/html",
+    "demo": "node scripts/record-demo.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

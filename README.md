@@ -14,6 +14,14 @@ The framework is designed around the problems real automation suites run into at
 
 > PayNest is a fictional bank. The application in `app/` is a small, dependency-free Node.js app written only so the framework has a realistic, deterministic system to test.
 
+## Test run demo
+
+The main end-to-end journey (sign in with MFA, add a payee, pay them, check the dashboard and statement), recorded by CI on every push to `main`:
+
+![PayNest end-to-end test run](https://sadia-sultana-bristy.github.io/paynest-banking-playwright-framework/demo/paynest-e2e-demo.gif)
+
+Full-quality MP4: [in this repo](docs/media/paynest-e2e-demo.mp4) · [latest CI recording](https://sadia-sultana-bristy.github.io/paynest-banking-playwright-framework/demo/paynest-e2e-demo.mp4) · record it yourself with `npm run demo`
+
 ---
 
 ## Highlights
@@ -100,7 +108,8 @@ The full design rationale is in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**
 │   └── smoke/                         Critical-path checks for every build
 ├── docs/                              Architecture, setup, execution and framework guides
 ├── playwright.config.js               Projects, retries, reporters, evidence, webServer
-└── merge.config.js                    Reporters used when merging sharded CI results
+├── merge.config.js                    Reporters used when merging sharded CI results
+└── playwright.demo.config.js          Slowed-down, always-on video run used to record the README demo
 ```
 
 ## Quick start
@@ -129,6 +138,7 @@ Full instructions: **[docs/SETUP.md](docs/SETUP.md)**
 | `npm run test:cross-browser` | Chromium, Firefox and WebKit |
 | `npm run test:headed` / `test:debug` / `test:ui` | Watch, step through, or use UI mode |
 | `npm run test:flaky-check` | Every Chromium test 5 times with retries off |
+| `npm run demo` | Record the end-to-end demo video (MP4 + GIF) into `reports/demo` |
 | `npx playwright test --grep @transfers` | Any tag or combination |
 | `TEST_ENV=staging BASE_URL=https://... npm test` | Another environment |
 
@@ -146,7 +156,7 @@ flowchart LR
 * **Triggers:** every push (any branch), pull requests to `main`, nightly at 02:30 UTC, and manual runs with an optional tag filter.
 * **Evidence:** each job uploads its blob report; failing jobs also upload screenshots, videos and traces.
 * **One report:** the merge job combines all 7 jobs into a single HTML report, publishes JUnit/JSON artifacts, and writes a pass/fail/flaky table by browser and tag to the run's summary page.
-* **Live report:** on `main`, the merged report is deployed to GitHub Pages.
+* **Live report and demo:** on `main`, the merged report is deployed to GitHub Pages, along with a freshly recorded video of the end-to-end journey.
 * **Safety:** `forbidOnly` fails CI if a `test.only` is committed; concurrency cancels outdated runs on the same branch.
 
 ## Writing a test
