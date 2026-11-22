@@ -1,0 +1,8 @@
+[
+  { "case": "missing nickname", "payee": { "nickname": "", "accountNumber": "1234567890", "bankCode": "PNB01" }, "field": "nickname", "message": "Enter a nickname for this payee" },
+  { "case": "nickname over 40 characters", "payee": { "nickname": "Neighbourhood Community Football Club Fees", "accountNumber": "1234567890", "bankCode": "PNB01" }, "field": "nickname", "message": "Nickname must be 40 characters or fewer" },
+  { "case": "account number too short", "payee": { "nickname": "Short", "accountNumber": "1234567", "bankCode": "PNB01" }, "field": "accountNumber", "message": "Account number must be 8 to 12 digits" },
+  { "case": "account number too long", "payee": { "nickname": "Long", "accountNumber": "1234567890123", "bankCode": "PNB01" }, "field": "accountNumber", "message": "Account number must be 8 to 12 digits" },
+  { "case": "account number with letters", "payee": { "nickname": "Letters", "accountNumber": "12345ABC90", "bankCode": "PNB01" }, "field": "accountNumber", "message": "Account number must be 8 to 12 digits" },
+  { "case": "no bank selected", "payee": { "nickname": "No bank", "accountNumber": "1234567890", "bankCode": "" }, "field": "bankCode", "message": "Choose the payee’s bank" }
+]

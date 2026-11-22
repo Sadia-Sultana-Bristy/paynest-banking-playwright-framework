@@ -1,0 +1,71 @@
+:root {
+  --ink: #14213d;
+  --muted: #5c677d;
+  --line: #dde3ec;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --brand: #0b6e4f;
+  --brand-ink: #ffffff;
+  --danger: #b42318;
+  --warn-bg: #fff7e6;
+  --warn: #8a5a00;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+.skip-link { position: absolute; left: -999px; }
+.skip-link:focus { left: 1rem; top: 1rem; background: #fff; padding: .5rem; }
+header.topbar { display: flex; align-items: center; gap: 1.5rem; padding: .75rem 1.5rem; background: var(--ink); color: #fff; flex-wrap: wrap; }
+.brand { font-weight: 700; font-size: 1.15rem; letter-spacing: .02em; }
+nav[aria-label='Main'] { display: flex; gap: .25rem; flex-wrap: wrap; }
+nav[aria-label='Main'] a { color: #d8e1f0; text-decoration: none; padding: .4rem .7rem; border-radius: .4rem; }
+nav[aria-label='Main'] a[aria-current='page'] { background: rgba(255,255,255,.15); color: #fff; }
+.user-menu { margin-left: auto; display: flex; gap: .75rem; align-items: center; }
+main { max-width: 1040px; margin: 0 auto; padding: 1.5rem; }
+h1 { font-size: 1.6rem; margin: .5rem 0 1.25rem; }
+h2 { font-size: 1.15rem; margin: 0 0 .75rem; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: .75rem; padding: 1.25rem; margin-bottom: 1.25rem; }
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.account-card .balance { font-size: 1.6rem; font-weight: 700; margin-top: .4rem; }
+.muted { color: var(--muted); font-size: .92rem; }
+.auth { max-width: 420px; margin: 4rem auto; }
+label { display: block; font-weight: 600; margin: .9rem 0 .3rem; }
+input, select { width: 100%; padding: .6rem .7rem; border: 1px solid #b9c3d3; border-radius: .45rem; font: inherit; background: #fff; }
+input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--danger); }
+fieldset { border: 0; padding: 0; margin: .9rem 0 0; }
+legend { font-weight: 600; margin-bottom: .3rem; }
+.radio { display: inline-flex; gap: .4rem; align-items: center; font-weight: 400; margin: 0 1rem 0 0; }
+.radio input { width: auto; }
+button, .button { display: inline-block; border: 0; border-radius: .45rem; padding: .6rem 1rem; font: inherit; font-weight: 600; cursor: pointer; background: var(--brand); color: var(--brand-ink); text-decoration: none; }
+button.secondary, .button.secondary { background: #e6ebf3; color: var(--ink); }
+button.danger { background: var(--danger); }
+button.link { background: none; color: inherit; padding: 0; text-decoration: underline; }
+.actions { display: flex; gap: .6rem; margin-top: 1.2rem; flex-wrap: wrap; }
+.field-error { color: var(--danger); font-size: .9rem; margin-top: .3rem; }
+.alert { border-radius: .5rem; padding: .75rem 1rem; margin-bottom: 1rem; }
+.alert.error { background: #fdecea; color: var(--danger); }
+.alert.info { background: #e8f3ee; color: var(--brand); }
+.alert.warning { background: var(--warn-bg); color: var(--warn); }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+th, td { text-align: left; padding: .6rem .5rem; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; }
+td.amount { text-align: right; font-variant-numeric: tabular-nums; }
+.credit { color: var(--brand); }
+.badge { display: inline-block; padding: .15rem .55rem; border-radius: 1rem; font-size: .82rem; font-weight: 600; }
+.badge.ACTIVE { background: #e8f3ee; color: var(--brand); }
+.badge.LOCKED { background: #fdecea; color: var(--danger); }
+.filters { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; }
+dl.summary { display: grid; grid-template-columns: 140px 1fr; gap: .5rem 1rem; }
+dl.summary dt { color: var(--muted); }
+dl.summary dd { margin: 0; font-weight: 600; }
+.toast { position: fixed; right: 1.25rem; bottom: 1.25rem; background: var(--ink); color: #fff; padding: .75rem 1rem; border-radius: .5rem; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(20,33,61,.45); display: grid; place-items: center; }
+.modal { background: #fff; border-radius: .75rem; padding: 1.5rem; width: min(420px, 92vw); }
+.limit-bar { height: .5rem; background: var(--line); border-radius: 1rem; overflow: hidden; margin-top: .6rem; }
+.limit-bar span { display: block; height: 100%; background: var(--brand); }
+@media (max-width: 640px) {
+  main { padding: 1rem; }
+  th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4) { display: none; }
+}

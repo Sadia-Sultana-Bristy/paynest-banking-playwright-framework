@@ -1,0 +1,47 @@
+{
+  "name": "paynest-banking-playwright-framework",
+  "version": "1.0.0",
+  "description": "Enterprise-style Playwright (JavaScript) test automation framework for a demo online banking application: Page Object Model, custom fixtures, API + UI layers, parallel cross-browser execution, retries, tagging and GitHub Actions CI with merged reports.",
+  "author": "Sadia Sultana Bristy",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "app": "node app/server.js",
+    "mfa": "node scripts/mfa-code.js",
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:e2e": "playwright test --grep @e2e",
+    "test:api": "playwright test --project=api",
+    "test:chromium": "playwright test --project=chromium --project=api",
+    "test:cross-browser": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:mobile": "playwright test --project=mobile-chrome",
+    "test:headed": "playwright test --project=chromium --headed --workers=1",
+    "test:debug": "playwright test --project=chromium --debug",
+    "test:ui": "playwright test --ui",
+    "test:flaky-check": "playwright test --project=chromium --repeat-each=5 --retries=0",
+    "report": "playwright show-report reports/html",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "playwright",
+    "test-automation",
+    "page-object-model",
+    "qa-automation",
+    "github-actions",
+    "e2e-testing",
+    "api-testing"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "1.63.0",
+    "dotenv": "^18.0.10",
+    "eslint": "^9.39.5",
+    "eslint-plugin-playwright": "^2.12.2",
+    "globals": "^17.14.0"
+  }
+}

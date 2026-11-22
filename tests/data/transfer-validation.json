@@ -1,0 +1,8 @@
+[
+  { "case": "empty amount", "amount": "", "field": "amount", "message": "Enter an amount" },
+  { "case": "zero amount", "amount": "0", "field": "amount", "message": "Enter an amount greater than $0.00" },
+  { "case": "negative amount", "amount": "-25", "field": "amount", "message": "Enter an amount greater than $0.00" },
+  { "case": "non-numeric amount", "amount": "ten dollars", "field": "amount", "message": "Enter a valid amount, for example 125.50" },
+  { "case": "three decimal places", "amount": "10.555", "field": "amount", "message": "Amount can have at most 2 decimal places" },
+  { "case": "more than the available balance", "amount": "2500.01", "field": "amount", "message": "Insufficient funds in Everyday Checking. Available: $2,500.00" }
+]

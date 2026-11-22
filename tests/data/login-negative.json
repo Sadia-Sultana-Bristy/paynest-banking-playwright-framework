@@ -1,0 +1,6 @@
+[
+  { "case": "wrong password", "username": "{{customer}}", "password": "Wrong#Pass1", "expect": { "formError": "Invalid username or password" } },
+  { "case": "unknown username", "username": "nobody.here", "password": "Whatever#1", "expect": { "formError": "Invalid username or password" } },
+  { "case": "blank username", "username": "", "password": "Whatever#1", "expect": { "field": "username", "message": "Enter your username" } },
+  { "case": "blank password", "username": "{{customer}}", "password": "", "expect": { "field": "password", "message": "Enter your password" } }
+]

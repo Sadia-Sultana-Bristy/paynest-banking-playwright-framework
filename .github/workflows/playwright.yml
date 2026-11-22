@@ -1,0 +1,167 @@
+name: Playwright CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+  schedule:
+    # Nightly full cross-browser regression at 02:30 UTC
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: 'Only run tests matching this tag or title, e.g. @smoke or @transfers (empty = everything)'
+        required: false
+        default: ''
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CI: true
+  TEST_ENV: ci
+  # Real environments keep this as a repository secret; the demo app falls back to a CI-only key.
+  TEST_SUPPORT_KEY: ${{ secrets.TEST_SUPPORT_KEY || 'ci-test-key' }}
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    name: Tests (${{ matrix.name }})
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # browser matrix x 2 shards each, all running in parallel
+          - { name: chromium-1, projects: '--project=chromium', shard: 1/2, install: chromium }
+          - { name: chromium-2, projects: '--project=chromium', shard: 2/2, install: chromium }
+          - { name: firefox-1, projects: '--project=firefox', shard: 1/2, install: firefox }
+          - { name: firefox-2, projects: '--project=firefox', shard: 2/2, install: firefox }
+          - { name: webkit-1, projects: '--project=webkit', shard: 1/2, install: webkit }
+          - { name: webkit-2, projects: '--project=webkit', shard: 2/2, install: webkit }
+          # API layer (no browser) + mobile smoke share one runner
+          - { name: api-mobile, projects: '--project=api --project=mobile-chrome', shard: 1/1, install: chromium }
+    env:
+      BLOB_NAME: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps ${{ matrix.install }}
+
+      - name: Run tests
+        env:
+          GREP: ${{ github.event.inputs.grep }}
+        run: |
+          ARGS=(${{ matrix.projects }} --shard=${{ matrix.shard }})
+          if [ -n "$GREP" ]; then ARGS+=(--grep "$GREP"); fi
+          echo "npx playwright test ${ARGS[*]}"
+          npx playwright test "${ARGS[@]}"
+
+      - name: Upload blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.name }}
+          path: blob-report/
+          retention-days: 7
+
+      - name: Upload failure evidence (screenshots, videos, traces)
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.name }}
+          path: test-results/
+          retention-days: 7
+
+  report:
+    name: Merge reports
+    needs: test
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Download blob reports from all jobs
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into one HTML / JUnit / JSON report
+        run: npx playwright merge-reports --config=merge.config.js ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: reports/html/
+          retention-days: 14
+
+      - name: Upload JUnit and JSON results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-junit-json
+          path: |
+            reports/junit/
+            reports/json/
+            reports/summary.md
+          retention-days: 14
+
+      - name: Prepare report for GitHub Pages
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports/html
+
+  publish-report:
+    name: Publish report to GitHub Pages
+    needs: report
+    if: ${{ !cancelled() && needs.report.result == 'success' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

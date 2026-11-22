@@ -1,0 +1,10 @@
+node_modules/
+.env
+reports/
+test-results/
+blob-report/
+all-blob-reports/
+playwright-report/
+playwright/.cache/
+*.log
+.DS_Store
